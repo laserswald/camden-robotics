@@ -46,7 +46,7 @@ public class PracticeBot extends SimpleRobot {
      * This function is called once each time the robot enters autonomous mode.
      */
     public void autonomous() {
-        
+        /* blarg blarg. I is editing this file */ 
     }
 
     /**
