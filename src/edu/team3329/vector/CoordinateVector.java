@@ -6,8 +6,8 @@ package edu.team3329;
 
 import com.sun.squawk.util.*;
 /**
- * Contains basic vector -2D- details as well as operations
- * @author boys
+ * Coordinate vector interface.
+ * @author Ben Davenport-Ray
  */
 public interface CoordinateVector
 {
