@@ -58,4 +58,8 @@ public class PracticeBot extends SimpleRobot {
         }
         
     }
+
+	public void printLog(String status){
+		System.io.println("Log: "+ status);	
+	}
 }
