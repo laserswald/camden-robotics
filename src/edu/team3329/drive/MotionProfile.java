@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj.templates.MotionProfile.ProfileType;
 public class MotionProfile {
 
     //contain both polar and cartesian coordinates of profile in a vector
-    private Vector2 heading;    //contains the loads current heading
+    private CoordinateVector heading;    //contains the loads current heading
     private ProfileType profile_type;
     
     //contain the profiles currentValue and desiredValue (desired value)
@@ -68,7 +68,7 @@ public class MotionProfile {
     /**
      * @return the heading
      */
-    public Vector2 getHeading()
+    public CoordinateVector getHeading()
     {
         return heading;
     }
@@ -76,7 +76,7 @@ public class MotionProfile {
     /**
      * @param heading the heading to set
      */
-    public void setHeading(Vector2 heading)
+    public void setHeading(CoordinateVector heading)
     {
         this.heading = heading;
     }

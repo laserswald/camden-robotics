@@ -12,7 +12,9 @@ import com.sun.squawk.util.*;
 public interface CoordinateVector
 {
     public double getDistance();
-    public double getHeading();
+    public void setDistance(double dist);
+    public double getDirection();
+    public void setDirection(double heading);
     public void add(CoordinateVector v);
     public double dotProduct(CoordinateVector v);   
 }

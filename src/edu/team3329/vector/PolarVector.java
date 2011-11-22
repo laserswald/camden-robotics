@@ -36,34 +36,35 @@ public class PolarVector implements CoordinateVector{
 		this.angle = angle;
 	}
 
-	public PolarVector(CartesianVector v){
-		this.magnitude = Math.sqrt(MathUtils.pow(v.getXCoordinate(),2)+MathUtils.pow(v.getYCoordinate(),2));
-        	this.angle = MathUtils.atan(v.getYCoordinate()/v.getXCoordinate());
+	public PolarVector(CoordinateVector v){
+		this.magnitude = v.getDistance();
+        this.angle = v.getDirection();
 	}
 	
-	public double getMagnitude(){
+	
+	public double getDistance(){
 		return this.magnitude;
 	}
 	
-	public double getAngle(){
+	public double getDirection(){
 		return this.angle;
 	}
-	
-	public double getDistance(){
-		return getMagnitude();
+
+	public void setDistance(double dist){
+		this.magnitude = dist;
 	}
-	
-	public double getHeading(){
-		return getAngle();
+
+	public void setDirection(double direction){
+		this.angle = direction;
 	}
 	
 	public void add(CoordinateVector v){
-		this.magnitude += v.getDistance;
-		this.angle += v.getHeading;
+		this.magnitude += v.getDistance();
+		this.angle += v.getDirection();
 	}
 	
 	public double dotProduct(CoordinateVector v){
-		return (this.magnitude * v.getDistance() * Math.cos(this.angle - v.getHeading));
+		return (this.magnitude * v.getDistance() * Math.cos(this.angle - v.getDirection()));
 	}
 }
 

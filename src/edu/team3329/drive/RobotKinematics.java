@@ -1,6 +1,9 @@
 /// A custom drive configuration class.
 package edu.team3329;
 
+
+import edu.team3329.vector.*;
+
 /**
  *This class is the drive configuration class to create a better drive system
  * @author Noah Harvey
@@ -37,8 +40,8 @@ public class RobotKinematics extends MotionProfile
      */
     public void updateHeading()
     {
-        this.getHeading().setMagnitude(this.getDistance());
-        this.getHeading().setAngle(this.getAngle());
+        this.getHeading().setDistance(this.getDistance());
+        this.getHeading().setDirection(this.getAngle());
     }
 
     /*
@@ -47,7 +50,7 @@ public class RobotKinematics extends MotionProfile
      */
     public void resetHeading()
     {
-        this.setHeading(new Vector2());
+        this.setHeading(new PolarVector());
     }
 
     /*

@@ -14,8 +14,8 @@ public class CartesianVector implements CoordinateVector{
     	this.Y = y;
     }
     public CartesianVector(CoordinateVector v){
-    	this.X = v.getDistance()*Math.cos(v.getHeading());
-        this.Y = v.getDistance()*Math.sin(v.getHeading());
+    	this.X = v.getDistance()*Math.cos(v.getDirection());
+        this.Y = v.getDistance()*Math.sin(v.getDirection());
     }
     
     public double getXCoordinate(){
@@ -25,12 +25,12 @@ public class CartesianVector implements CoordinateVector{
     public double getYCoordinate(){
     	return this.Y;
     }
-    
+
     public double getDistance(){
     	return Math.sqrt(Math.pow(this.X, 2)+Math.pow(this.Y, 2));
     }
     
-    public double getHeading(){
+    public double getDirection(){
     	return Math.atan(this.y/this.x);
     }
     
