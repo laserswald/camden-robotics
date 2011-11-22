@@ -1,8 +1,5 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-package edu.wpi.first.wpilibj.templates;
+/// A custom drive configuration class.
+package edu.team3329;
 
 /**
  *This class is the drive configuration class to create a better drive system

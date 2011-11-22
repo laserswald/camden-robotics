@@ -1,9 +1,6 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+/// Motion profiling code.
 
-package edu.wpi.first.wpilibj.templates;
+package edu.team3329;
 
 import edu.wpi.first.wpilibj.templates.MotionProfile.ProfileType;
 
@@ -101,7 +98,7 @@ public class MotionProfile {
     }
 
     
-
+	//Hey, 1.3 doesn't allow enums? I beg to differ, i saw some in some crazy folder.
     /*
      * different profile types
      * Follows enum type since the FRC code is lame and doesn't support past v1.3
