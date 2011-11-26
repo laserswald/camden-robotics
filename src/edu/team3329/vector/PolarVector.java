@@ -20,7 +20,9 @@
  * 
  * 
  */
+package edu.team3329.vector;
 
+import com.sun.squawk.util.*;
 
 public class PolarVector implements CoordinateVector{
 	private double magnitude;
