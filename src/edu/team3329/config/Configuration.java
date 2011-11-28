@@ -48,7 +48,7 @@ public class Configuration{
 		sections.add(name, sect);
 	}
 
-	private parse(){
+	private void parse(){
 		while((thisline== br.readLine())!=null){
 			
 		}
@@ -56,10 +56,10 @@ public class Configuration{
 }
 
 private class ConfigSection {
-	private Hashtable data;
+	private HashTable data;
 	
 	public ConfigSection(){
-		this.data = new Hashtable();
+		this.data = new HashTable();
 	}
 
 	public Object getObject(String key){
