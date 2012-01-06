@@ -4,7 +4,7 @@
 /* must be accompanied by the FIRST BSD license file in the root directory of */
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
-package edu.wpi.first.wpilibj.templates;
+package team3329;
 
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.SimpleRobot;

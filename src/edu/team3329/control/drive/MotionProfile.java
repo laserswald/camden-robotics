@@ -1,6 +1,6 @@
 /// Motion profiling code.
 
-package edu.team3329;
+package team3329.control.drive;
 
 import edu.wpi.first.wpilibj.templates.MotionProfile.ProfileType;
 

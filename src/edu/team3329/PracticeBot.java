@@ -1,5 +1,5 @@
 
-package edu.team3329;
+package team3329;
 
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.SimpleRobot;

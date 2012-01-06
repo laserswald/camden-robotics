@@ -1,4 +1,4 @@
-package edu.team3329.vector;
+package team3329.vector;
 
 public class CartesianVector implements CoordinateVector{
 

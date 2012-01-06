@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package edu.team3329;
+package team3329.control;
 
 import edu.wpi.first.wpilibj.Joystick;
 

@@ -1,5 +1,5 @@
 /// A custom drive configuration class.
-package edu.team3329;
+package team3329.control.drive;
 
 
 import edu.team3329.vector.*;

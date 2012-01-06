@@ -1,4 +1,4 @@
-package edu.team3329;
+package team3329.config;
 
 
 import com.sun.squawk.io.BufferedReader;
