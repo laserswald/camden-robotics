@@ -8,10 +8,10 @@ package edu.team3329;
 import edu.wpi.first.wpilibj.Joystick;
 
 /**
- * This class uses a custom joystick operations for the LogiTech Atack Joysticks
+ * This class uses a custom joystick operations for the LogiTech Attack Joysticks
  * Its main purpose is to add a small threshold to values determined by
  * this Joystick.getRawAxis() method
- * @author boys
+ * @author Noah Harvey
  */
 public class CustomJoystick extends Joystick{
 
@@ -73,8 +73,9 @@ public class CustomJoystick extends Joystick{
     }
 
     
-    /*
+    /**
      * scales the given value between a given threshold
+	 * @param value the value to scale.
      */
     private double scale(double value)
     {
