@@ -1,8 +1,16 @@
+<<<<<<< HEAD
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><project basedir="." default="help" name="2012Season">
 
 <!-- You may freely edit this file. See commented blocks below for -->
 <!-- some examples of how to customize the build. -->
 
+=======
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><project basedir="." default="help" name="camden-robotics">
+
+<!-- You may freely edit this file. See commented blocks below for -->
+<!-- some examples of how to customize the build. -->
+
+>>>>>>> config
     <!--
     
     The master build file lives at: ${sunspot.home}/build.xml.
@@ -89,5 +97,10 @@
 
     For more information on using ant, see http://ant.apache.org.
 
+<<<<<<< HEAD
     -->
 </project>
+=======
+    -->
+</project>
+>>>>>>> config
