@@ -6,86 +6,49 @@
 package team3329.control;
 
 import edu.wpi.first.wpilibj.Joystick;
-
 /**
- * This class uses a custom joystick operations for the LogiTech Atack Joysticks
- * Its main purpose is to add a small threshold to values determined by
- * this Joystick.getRawAxis() method
+ *
  * @author boys
  */
 public class CustomJoystick extends Joystick{
 
-    /*
-     * Thresholds for scaling values
-     */
+    private boolean thrStatus = false;
+    private double min = 0;
+    private double max = 0;
 
-    private double m_threshold = .025;
-
-    public CustomJoystick(int port, double threshold)
+    public CustomJoystick(int port, boolean status, double min, double max)
     {
         super(port);
-        this.m_threshold = threshold;
+        this.thrStatus = status;
     }
 
-    public CustomJoystick(int port, int numAxis, int numButtons)
+    public void setThreshold(int min, int max)
     {
-        super(port, numAxis, numButtons);
+        this.min = normalizeValue(min);
+        this.max = normalizeValue(max);
     }
 
-    //return a thresholded value of the x and y values
-
-    public double get_X()
+    public double getJoystickValue(int axis)
     {
-        return scale(getX());
+        if(thrStatus == true)
+        {
+           if( getRawAxis(axis) < this.min) return min;
+           if( getRawAxis(axis) > this.max) return max;
+        }
+
+        return getRawAxis(axis);
     }
 
-    public double get_Y()
-    {
-        return scale(getY());
-    }
-
-    public double get_Throttle()
-    {
-        return scale(getThrottle());
-    }
-
-    //return a vector2 form of the joystick x and y values
-
-    public Vector2 getVector()
-    {
-        return new Vector2(this.get_X(), this.get_Y(), true);
-    }
-
-    /**
-     * @return the m_threshMin
-     */
-    public double getThresholdValue()
-    {
-        return m_threshold;
-    }
-
-    /**
-     * @param set the new threshold value
-     */
-    public void setThresholdValue(double threshold)
-    {
-        this.m_threshold = threshold;
-    }
-
+    public double getMin(){return min;}
+    public double getMax(){return max;}
+    public boolean getStatus(){return thrStatus;}
     
-    /*
-     * scales the given value between a given threshold
-     */
-    private double scale(double value)
+    private double normalizeValue(double in)
     {
-        if (value > -m_threshold && value < m_threshold)
-        {
-            return 0;
-        }
-        else
-        {
-            return value;
-        }
+        if(in > 1.0) return 1;
+        if(in < 0.0) return 0;
+
+        return in;
     }
 
 }

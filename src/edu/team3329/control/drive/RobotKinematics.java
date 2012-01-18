@@ -2,7 +2,7 @@
 package team3329.control.drive;
 
 
-import edu.team3329.vector.*;
+import team3329.vector.*;
 
 /**
  *This class is the drive configuration class to create a better drive system

@@ -4,7 +4,6 @@
  */
 package team3329.vector;
 
-import com.sun.squawk.util.*;
 /**
  * Coordinate vector interface.
  * @author Ben Davenport-Ray
