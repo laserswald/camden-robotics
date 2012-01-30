@@ -1,7 +1,0 @@
-#!/bin/bash
-
-#update machine code from git
-
-rm -r /home/boys/programFiles/2012FRCSeason/src/.team3329/*
-cp -r /home/boys/programFiles/2012FRCSeason/src/team3329/* /home/boys/programFiles/2012FRCSeason/src/.team3329
-

@@ -1,0 +1,4 @@
+Wed Jan 25 22:40:35 EST 2012
+============================
+Change all calling methods of Navigation to use the singleton pattern created. 
+
