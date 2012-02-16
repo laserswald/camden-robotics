@@ -7,85 +7,78 @@ package team3329.drive;
  * Holds target coordinates and updates them
  * @author Noah Harvey
  */
-import team3329.vector.*;
-import team3329.util.Queue;
-import team3329.drive.device.DriveSensors;
-import team3329.util.DriverScreen;
-
 import java.util.Vector;
+import edu.wpi.first.wpilibj.Encoder;
+import team3329.util.*;
+import team3329.util.Queue;
 
+import team3329.vector.*;
 public class Navigation
 {
-	//instance variable
-	private static Navigation instance;
+    //instance variable
 
-    private  double widthOfContact;  //the width between the contact points of
-    private  PolarVector heading;    //drive wheels
+    private static Navigation instance;
 
-    private  Queue posCoordinates;
-
-    private  DriveSensors driveSensors = null;
-
+    //width between contact points on wheels
+    private PolarVector heading;
+    private Queue posCoordinates;
     
+    //drive encoders
+    public static Encoder m_leftEncoder;
+    public static Encoder m_rightEncoder;
+
     //============================SINGLETON PATTERN==========================================|
-	 
-    public static void init(double contactWidth, DriveSensors sensors)
+    public static void init(Encoder left_encoder, Encoder right_encoder)
     {
-        instance = new Navigation(new CartesianVector(), contactWidth, sensors);
+        instance = new Navigation(new CartesianVector(), left_encoder, right_encoder);
     }
 
-    public static void init(CoordinateVector h, double cWidth, DriveSensors sensors)
+    public static void init(CoordinateVector h, double cWidth, Encoder left_encoder, Encoder right_encoder)
     {
-	instance = new Navigation(h, cWidth, sensors);
+        instance = new Navigation(h, left_encoder, right_encoder);
     }
 
-    private Navigation(CoordinateVector h, double ctWidth, DriveSensors sns)
+    private Navigation(CoordinateVector h, Encoder lEncoder, Encoder rEncoder)
     {
-        this.widthOfContact = ctWidth;
         this.heading = new PolarVector(h);
-        this.driveSensors = sns;
 
-        if(!driveSensors.SensorsStopped()) driveSensors.stopDriveSensors(); //if
-            //drive sensors are not stopped then stop them
-        driveSensors.resetDriveSensors(); //reset the sensors to 0
-        driveSensors.startDriveSensors(); //start the sensors to work
-        
+        m_leftEncoder = lEncoder;//create encoders
+        m_rightEncoder = rEncoder;
+
         posCoordinates = new Queue();
     }
 
-	public static Navigation getInstance()
-	{
-		return instance;
-	}
-	
-	//=================================================================================================|
+    public static Navigation getInstance()
+    {
+        return instance;
+    }
 
-	//reset the current heading to origin
+    //=================================================================================================|
+    //reset the current heading to origin
     public void reset()
     {
-        updateHeading(new PolarVector(0,0));
-        posCoordinates = new Queue(new Vector());
+        updateHeading(new PolarVector(0, 0));
+        posCoordinates = new Queue();
+        posCoordinates.add(new PolarVector(0,0));
     }
 
     //update current heading based off of sensor readings
-    public  synchronized  void updateHeading()
+    public synchronized void updateHeading()
     {
-        double rD = driveSensors.getRightDistance();
-        double lD = driveSensors.getLeftDistance();
-        
-        double h = (rD - lD)/widthOfContact;
-        double d = (rD + lD)/2;
+        double lD = m_leftEncoder.getDistance();//get distance from encoders
+        double rD = m_rightEncoder.getDistance();
 
-        heading.setDistance(d);
-        heading.setDirection(h);
+        double angle = (rD - lD) / RobotProperties.wheelContactWidth;
+        double distance = (rD + lD) / 2;
+
+        heading.setDistance(distance);
+        heading.setDirection(angle);
 
         logHeading();
     }
 
-    
-
     //update current heading based on given coordinates
-    public synchronized  void updateHeading(CoordinateVector h)
+    public synchronized void updateHeading(CoordinateVector h)
     {
         heading = new PolarVector(h);
 
@@ -106,40 +99,45 @@ public class Navigation
         return heading.getDistance();
     }
 
-    public  synchronized double getCurrentLeftDistance()
+    //return the current speed of the robot
+    //that is moving in a straight line
+    public double getHeadingSpeed()
     {
-        return driveSensors.getLeftDistance();
-    }
+        double rSpeed = m_leftEncoder.getRate();
+        double lSpeed = m_rightEncoder.getRate();
 
-    public  synchronized double getCurrentRightDistance()
-    {
-        return driveSensors.getRightDistance();
-    }
-
-    //return contact width
-    public  double getContactWidth()
-    {
-        return widthOfContact;
+        return (lSpeed + rSpeed)/ 2;
     }
 
     //add another coordinate to the back of the coordinate stack
-    public  void addNextCoordinate(CartesianVector c)
+    public void addNextCoordinate(CartesianVector c)
     {
         posCoordinates.add(new PolarVector(c));
     }
 
-    //pulls the next coordinate off of the coordinate stack
-    public  PolarVector getNextCoordinate()
+    public void addNextCoordinate(PolarVector c)
     {
-        return (PolarVector)posCoordinates.pull();
+        posCoordinates.add(c);
+    }
+
+    //pulls the next coordinate off of the coordinate stack
+    public PolarVector getNextCoordinate()
+    {
+        return (PolarVector) posCoordinates.pull();
+    }
+
+    //returns the next coordinate to be pulled
+    public PolarVector previewNextCoordinate()
+    {
+        return (PolarVector) posCoordinates.search(posCoordinates.length()-1);
     }
 
     //log the current heading
-    public  void logHeading()
+    public void logHeading()
     {
         String d = String.valueOf(heading.getDirection());
         String di = String.valueOf(heading.getDistance());
 
-        DriverScreen.printLog("\nCurrent Heading:: Direction: "+d+"\nDistance:  "+di);
+        DriverScreen.printLog("\nCurrent Heading:: Direction: " + d + "\nDistance:  " + di);
     }
 }

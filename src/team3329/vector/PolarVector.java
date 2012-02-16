@@ -23,7 +23,8 @@
 package team3329.vector;
 
 public class PolarVector implements CoordinateVector{
-	private double magnitude;
+
+        private double magnitude;
 	private double angle;
 
 	public PolarVector(){
@@ -59,8 +60,13 @@ public class PolarVector implements CoordinateVector{
 	}
 
 	public void add(CoordinateVector v){
-		this.magnitude += v.getDistance();
-		this.angle += v.getDirection();
+		CartesianVector newV = new CartesianVector(v);
+                CartesianVector currentV = new CartesianVector(this);
+
+                currentV.add(newV);
+
+                this.angle = new PolarVector(currentV).getDirection();
+                this.magnitude = new PolarVector(currentV).getDistance();
 	}
 
 	public double dotProduct(CoordinateVector v){

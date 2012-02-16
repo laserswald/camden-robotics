@@ -8,35 +8,42 @@ package team3329.drive;
 
 import team3329.util.*;
 import team3329.vector.*;
-import edu.wpi.first.wpilibj.RobotDrive;
-import edu.wpi.first.wpilibj.SpeedController;
 import java.util.Timer;
 import java.util.TimerTask;
+import edu.wpi.first.wpilibj.PIDController;
+import edu.wpi.first.wpilibj.Encoder;
 
-public class CustomDrive extends RobotDrive{
-    
-    
-    private Timer driveTimer;
+public class CustomDrive
+{
+    //Timer that runs the TimerTask
+    private Timer driveTimer = new Timer();
+
+    //create a drive task for access later
     private DriveTask driveTask;
-    private boolean override = false; //describes whether the drive interface 
-                                          //is in auto or direct drive
+    
+    //describes whether the drive interface is in auto or direct drive
+    private boolean m_override = false; 
+    
+    //PID controller constants
+    private double Kp;
+    private double Ki;
+    private double Kd;
 
-    private DriveMotorPID leftMotorPID = new DriveMotorPID(.01,0.01,0);
-    private DriveMotorPID rightMotorPID = new DriveMotorPID(.01,0.01,0);
+    //PID controllers for each motor
+    //only two are needed incase of a 4 motor drive
+    //because two motors are coupled
+    private PIDController m_leftMotorPID;
+    private PIDController m_rightMotorPID;
 
-    private double leftMotorValue;
-    private double rightMotorValue;
-
-    public CustomDrive(SpeedController fl, SpeedController rl,
-            SpeedController fr, SpeedController rr)
+    //speed controllers for motor *USE THE DriveMotor CLASS*
+    private DriveMotor m_leftMotor;
+    private DriveMotor m_rightMotor;
+    
+    //allow for the use of a 4 motor drive or a two motor drive
+    public CustomDrive(DriveMotor l_driveMotor, DriveMotor r_driveMotor)
     {
-        super(fl,rl,fr,rr);
-        init();
-    }
-
-    public CustomDrive(SpeedController l, SpeedController r)
-    {
-        super(l,r);
+        m_leftMotor = l_driveMotor;
+        m_rightMotor = r_driveMotor;
         init();
     }
 
@@ -44,45 +51,25 @@ public class CustomDrive extends RobotDrive{
     //and the timer for the drive controllers
     private void init()
     {
-        //init motorPID Controllers
-        leftMotorPID.addDriveMotorListener(new DriveMotorPIDListener()
-        {
-            public void getMotorValue(double v)
-            {
-                leftMotorValue = v;
-            }
+        //the encoders are from the Navigation class
+        Navigation.m_leftEncoder.start();
+        Navigation.m_rightEncoder.start();
 
-            public double getCurrentDistance()
-            {
-                return Navigation.getInstance().getCurrentLeftDistance();
-            }
-        });
+        //sets the encoders to act as a distance process variable
+        //for the PID controllers
+        Navigation.m_leftEncoder.setPIDSourceParameter(Encoder.PIDSourceParameter.kDistance);
+        Navigation.m_rightEncoder.setPIDSourceParameter(Encoder.PIDSourceParameter.kDistance);
 
-        rightMotorPID.addDriveMotorListener(new DriveMotorPIDListener()
-        {
-            public void getMotorValue(double v)
-            {
-                rightMotorValue = v;
-            }
+        //create PID controllers
+        m_leftMotorPID = new PIDController(Ki,Kp,Kd, Navigation.m_leftEncoder, m_leftMotor);
+        m_rightMotorPID = new PIDController(Ki,Kp,Kd,Navigation.m_rightEncoder, m_rightMotor);
 
-            public double getCurrentDistance()
-            {
-                return Navigation.getInstance().getCurrentRightDistance();
-            }
-        });
+        m_leftMotorPID.enable();
+        m_rightMotorPID.enable();
 
-        leftMotorPID.setTargetValue(0);
-        rightMotorPID.setTargetValue(0);
-
-        leftMotorPID.enablePID();
-        rightMotorPID.enablePID();
-
-		//init drive timer
-        driveTimer = new Timer();
+        //start the driving!
         driveTask = new DriveTask(this);
-
-		//start the drive timer
-        driveTimer.scheduleAtFixedRate(driveTask, 1, 2);
+        driveTimer.scheduleAtFixedRate(driveTask, 0L, 50);
     }
 
     
@@ -91,45 +78,44 @@ public class CustomDrive extends RobotDrive{
     //if the current left and right values sare within the correct tolerance
     public void driveNext()
     {
-        System.out.println("Drive NExt");
         PolarVector c = Navigation.getInstance().getNextCoordinate();
-        double a = c.getDirection();
-        double d = c.getDistance();
-        double w = Navigation.getInstance().getContactWidth();
+        double angle = c.getDirection();
+        double distance = c.getDistance();
+        double wheelWidth = RobotProperties.wheelContactWidth;
 
         //get left and right distances
-        double rD = ((w*a) + (2*d))/2; //What are these variables? maybe better names are appropriate. -bdr
-        double lD = ((2*d) - (w*a))/2;
+        double rightDistance = ((wheelWidth*angle) + (2*distance))/2;
+        double leftDistance = ((2*distance) - (wheelWidth*angle))/2;
 
-        leftMotorPID.setTargetValue(lD);  //send distances to PID 
-        rightMotorPID.setTargetValue(rD); //loops that control the motor ouput
-        
-        System.out.println(rD+" "+lD);
+        m_leftMotorPID.setSetpoint(leftDistance);  //send distances to PID
+        m_rightMotorPID.setSetpoint(rightDistance); //loops that control the motor ouput
+
     }
 
-    //drives the robot according to the current drive values
-    public void drive()
+    //drives the robot according to tthe current drive values
+    public void drive(double l, double r)
     {
-        if(!override)
+        if(m_override)
         {
-            System.out.println(leftMotorPID.isOnTarget());
-            this.tankDrive(leftMotorValue,rightMotorValue);
+            m_leftMotor.set(l);
+            m_rightMotor.set(r);
         }
     }
 
+    //for debugging log the current motor values
     public void logMotorValue()
     {
-        String lv = String.valueOf(this.leftMotorValue);
-        String rv = String.valueOf(this.rightMotorValue);
+        String lv = String.valueOf(m_leftMotor.getMotorValue());
+        String rv = String.valueOf(m_rightMotor.getMotorValue());
 
         DriverScreen.printLog("\nCurrent Drive Motor Values:: Left: "+lv+"Right:  "+rv);
     }
 
+    //returns whether the robot itself is at its current setPoints
     public boolean onTarget()
     {
-        if( leftMotorPID.isOnTarget() && rightMotorPID.isOnTarget() ) return true;
-
-        return false;
+        if(m_leftMotorPID.onTarget() && m_rightMotorPID.onTarget()) return true;
+        return false;//return whether we are at the desired point
     }
 
     //safety code that stops the robot immediately and clears the
@@ -137,24 +123,41 @@ public class CustomDrive extends RobotDrive{
     public void stopNow()
     {
         driveTask.Stop();
-        leftMotorPID.disablePID();
-        rightMotorPID.disablePID();
 
-        leftMotorValue = 0; //stop motors
-        rightMotorValue = 0;
+        m_leftMotor.set(0);
+        m_rightMotor.set(0);
 
-        leftMotorPID.setTargetValue(0); //set pid target values to 0
-        rightMotorPID.setTargetValue(0);
+        m_leftMotorPID.disable();
+        m_rightMotorPID.disable();
 
+        //set the setpoints to 0 so the system doesn't go wacky when it is
+        //started back up
+        m_leftMotorPID.setSetpoint(0);
+        m_rightMotorPID.setSetpoint(0);
+        
         Navigation.getInstance().reset();
+    }
+
+    //disable the PID loop controller to allow external take over of the
+    //drive motors
+    public void disablePID()
+    {
+        //stop the drive task to
+        driveTask.Stop();
+
+        m_leftMotorPID.disable();
+        m_rightMotorPID.disable();
+
+        m_leftMotorPID.setSetpoint(0);
+        m_rightMotorPID.setSetpoint(0);
     }
 
     //compliment of stopNow()
     //starts the drive again
     public void startNow()
     {
-        leftMotorPID.enablePID();
-        rightMotorPID.enablePID();
+        m_leftMotorPID.enable();
+        m_rightMotorPID.enable();
 
         driveTask.Go();
     }
@@ -163,11 +166,26 @@ public class CustomDrive extends RobotDrive{
     // or override mode(allows usr to directly specify motor output)
     public void setOverride(boolean setting)
     {
-        override = setting;
+        //to avoid stopping the robot for no reason
+        //check to see if we are already in the state we want
+        if(m_override == setting) return;
+        
+        m_override = setting;
+
+        if(m_override)
+        {
+            stopNow();
+        }
+        else
+        {
+            startNow();
+        }
     }
     
 }
 
+//timertask to feed the PID loops the next value
+//when needed
 class DriveTask extends TimerTask
 {
     CustomDrive driveCtrl;
@@ -182,16 +200,9 @@ class DriveTask extends TimerTask
     {
         if(!halt) //if we do not want to halt then execute drive
         {
-            
             //if the current drive motors are at the target value then read
             //the next coordinate and drive to it
-            if(driveCtrl.onTarget())
-            {
-                System.out.println("ON TARGET");
-                driveCtrl.driveNext();
-            }
-            
-            driveCtrl.drive();System.out.println();
+            if(driveCtrl.onTarget()) driveCtrl.driveNext();
         }
     }
 

@@ -46,4 +46,10 @@ public class Queue {
     {
         return this.list;
     }
+
+    //return current vector length
+    public int length()
+    {
+        return list.size();
+    }
 }

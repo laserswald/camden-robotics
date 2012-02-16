@@ -63,6 +63,7 @@ public class CartesianVector implements CoordinateVector{
         this.X += cv.getXCoordinate();
 	this.Y += cv.getYCoordinate();
     }
+    
     public double dotProduct(CoordinateVector v){
     	CartesianVector cv = new CartesianVector(v);
     	return (this.X * cv.getXCoordinate()) + (this.Y * cv.getYCoordinate());
