@@ -2,9 +2,8 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package edu.team3329;
+package team3329.vector;
 
-import com.sun.squawk.util.*;
 /**
  * Coordinate vector interface.
  * @author Ben Davenport-Ray

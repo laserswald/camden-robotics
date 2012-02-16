@@ -7,21 +7,21 @@ package team3329.util;
 
 import java.util.Vector;
 
-public class FIFO {
+public class Queue {
     
     private Vector list;
     
-    public FIFO(Vector l)
+    public Queue(Vector l)
     {
         this.list = l;
     }
     
-    public FIFO()
+    public Queue()
     {
         this.list = new Vector();
     }
     
-    //puts a new object at the end of the FIFO list
+    //puts a new object at the end of the Queue list
     public void add(Object o)
     {
         list.addElement(o);
@@ -32,7 +32,6 @@ public class FIFO {
     {
         Object rt = list.firstElement();
         list.removeElementAt(0);
-        
         return rt;
     }
     
@@ -42,9 +41,15 @@ public class FIFO {
         return list.elementAt(index);
     }
     
-    //returns the current FIFO list
+    //returns the current Queue list
     public Vector getFIFOList()
     {
         return this.list;
+    }
+
+    //return current vector length
+    public int length()
+    {
+        return list.size();
     }
 }

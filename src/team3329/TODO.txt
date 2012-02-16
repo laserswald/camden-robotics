@@ -1,0 +1,9 @@
+THINGS TO DO!:
+================================================================================
+Finish Shooting Code and add to RobotMain for testing.
+
+Test config code
+
+Determine Distance per count for each encoder
+
+Finish ImageProcessor
